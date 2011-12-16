@@ -1,0 +1,26 @@
+Caleb Everett
+Graphics final
+
+Installing bullet
+The following has worked on both of my systems, if it does not email me
+and check the bullet install page
+http://bulletphysics.org/mediawiki-1.5.8/index.php/Installation
+run the following commands in this directory
+------------------
+You should be able to run install.sh
+but if not follow these instructions
+
+Download bullet http://bullet.googlecode.com/files/bullet-2.79-rev2440.tgz
+extract it to this directory
+move into bullet-2.79
+run the following commands:
+./autogen.sh
+./configure
+make
+
+
+Compiling my project
+---------------------
+run make in this directory
+
+please email me if this does not work everett.caleb@gmail.com

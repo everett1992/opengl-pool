@@ -1,0 +1,16 @@
+# this file lists what git should ignore
+# compiled source
+####################
+*.o
+*.exe
+
+
+# bullet
+###################
+bullet-2.79.tgz
+bullet-2.79
+
+
+# vim swap files
+##################
+*.swp
