@@ -3,7 +3,8 @@
 
 #include "Timer.h"
 
-void Timer::start_clock(){
+void Timer::start_clock()
+{
 #ifdef __MACH__
 	timeval tmp;
 	gettimeofday(&tmp, NULL);
@@ -14,7 +15,8 @@ void Timer::start_clock(){
 #endif
 }
 
-void Timer::end_clock(){
+void Timer::end_clock()
+{
 #ifdef __MACH__
 	timeval tmp;
 	gettimeofday(&tmp, NULL);
@@ -25,7 +27,8 @@ void Timer::end_clock(){
 #endif
 }
 
-timespec Timer::diff(){
+timespec Timer::diff()
+{
 	timespec temp;
 	if ((end.tv_nsec-start.tv_nsec)<0) {
 		temp.tv_sec = end.tv_sec-start.tv_sec-1;
@@ -35,6 +38,11 @@ timespec Timer::diff(){
 		temp.tv_nsec = end.tv_nsec-start.tv_nsec;
 	}
 	return temp;
+}
+
+double Timer::seconds()
+{
+	return (diff().tv_sec + diff().tv_nsec/1000000000.0);
 }
 
 #endif // TIMER_CPP

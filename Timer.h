@@ -16,6 +16,7 @@ class Timer
 		void start_clock(void);
 		void end_clock(void);
 		timespec diff(void);
+		double seconds(void);
 };
 
 #endif // TIMER_H

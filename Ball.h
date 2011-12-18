@@ -22,14 +22,17 @@ class Ball
 		btRigidBody *rigidBody;
 		btDiscreteDynamicsWorld *dynamicsWorld;
 		btScalar ballMatrix[16];
+		int color;
+		int type;
 	
 	public:
 		Ball();
-		Ball(float x, float y, float z);
+		Ball(float x, float y, float z, int color, int type);
 		void add(btDiscreteDynamicsWorld *dynamicsWorld);
 		void draw();
 		void update();
 		btRigidBody* getBody();
+		btTransform  getTrans();
 
 		~Ball();
 };

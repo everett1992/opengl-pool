@@ -3,16 +3,32 @@
 
 #include "Ball.h"
 
-#define MASS 1
+#define MASS 2
 #define RADIUS 1.125
+
+#define SOLID  0
+#define STRIPE 1
+
+#define WHITE  0
+#define YELLOW 1
+#define BLUE   2
+#define RED    3
+#define PURPLE 4
+#define ORANGE 5
+#define GREEN  6
+#define BROWN  7
+#define BLACK  8
 
 Ball::Ball()
 {
-	Ball(0,0,0);
+	Ball(0,RADIUS,0, WHITE, SOLID);
 }
 
-Ball::Ball(float x, float y, float z)
+Ball::Ball(float x, float y, float z, int colorTmp, int typeTmp)
 {
+	color = colorTmp;
+	type = typeTmp;
+
 	shape = new btSphereShape(RADIUS);
 	motionState =
 		new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1), btVector3(x,y,z)));
@@ -22,8 +38,8 @@ Ball::Ball(float x, float y, float z)
 
 	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass,motionState,shape,inertia);
 	rigidBody = new btRigidBody(rigidBodyCI);
-	//rigidBody->setDamping(0.2,0.0); // simulates friction
 	rigidBody->setRestitution(1.0);
+	rigidBody->setDamping(0,0.6);
 }
 void Ball::add(btDiscreteDynamicsWorld *world)
 {
@@ -40,11 +56,47 @@ void Ball::draw(){
 	int q = 5; // slices
 	int p = 10; // stacks
 	float R = RADIUS; // radius
+
+	float Color[3] = {0, 0, 0};
+	switch(color)
+	{
+		case WHITE:
+			Color[0] = 1.0; Color[1] = 1.0; Color[2] = 1.0;
+			break;
+		case YELLOW:
+			Color[0] = 1.0; Color[1] = 1.0; Color[2] = 0.0;
+			break;
+		case BLUE:
+			Color[0] = 0.0; Color[1] = 0.0; Color[2] = 1.0;
+			break;
+		case RED:
+			Color[0] = 1.0; Color[1] = 0.0; Color[2] = 0.0;
+			break;
+		case PURPLE:
+			Color[0] = 0.5; Color[1] = 0.0; Color[2] = 0.5;
+			break;
+		case ORANGE:
+			Color[0] = 1.0; Color[1] = 0.5; Color[2] = 0.0;
+			break;
+		case GREEN:
+			Color[0] = 0.0; Color[1] = 1.0; Color[2] = 0.0;
+			break;
+		case BROWN:
+			Color[0] = 0.4; Color[1] = 0.2; Color[2] = 0.0;
+			break;
+		case BLACK:
+			Color[0] = 0.0; Color[1] = 0.0; Color[2] = 0.0;
+			break;
+		default:
+			break;
+	}
+
 	for(j = 0; j < q; j++)
 	{
-		if (j < q * .1) glColor3f(1.0, 0.0, 0.0);
-		else glColor3f(0.0, 0.0, 0.0);
-
+		if ((j < q * .3) || type == SOLID) glColor3f(Color[0], Color[1], Color[2]);
+		else glColor3f(1.0, 1.0, 1.0); // white for outer area
+		
+		if (type == SOLID && (j > q * .5)) glColor3f(1.0, 1.0, 1.0);
 		glBegin(GL_TRIANGLE_STRIP);
 		for(i = 0; i <= p; i++)
 		{
@@ -56,6 +108,7 @@ void Ball::draw(){
 					R * cos( (float)j/q * PI/2.0 ) * sin( 2.0 * (float)i/p * PI ) );         
 		}
 		glEnd();
+		if (type == SOLID && (j > q * .5)) glColor3f(Color[0], Color[1],Color[2]);
 		glBegin(GL_TRIANGLE_STRIP);
 		for(i = 0; i <= p; i++)
 		{
@@ -75,12 +128,19 @@ void Ball::update()
 {
 	btTransform trans;
 	rigidBody->getMotionState()->getWorldTransform(trans);
-	trans.getOpenGLMatrix(ballMatrix);
+	trans.getOpenGLMatrix(ballMatrix); // set ballMatrix to the matrix from opengl
 }
 
 btRigidBody* Ball::getBody()
 {
 	return rigidBody;
+}
+
+btTransform Ball::getTrans()
+{
+	btTransform trans;
+	rigidBody->getMotionState()->getWorldTransform(trans);
+	return trans;
 }
 
 Ball::~Ball()

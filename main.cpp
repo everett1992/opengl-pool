@@ -14,9 +14,26 @@
 #define PI 3.14
 #define MAX_BALLS 200
 
+#define SOLID  0
+#define STRIPE 1
+
+#define WHITE  0
+#define YELLOW 1
+#define BLUE   2
+#define RED    3
+#define PURPLE 4
+#define ORANGE 5
+#define GREEN  6
+#define BROWN  7
+#define BLACK  8
+
+
 using namespace std;
  
 static int height, width;
+
+static int mouseX, mouseY, deltaMouseX, deltaMouseY;
+static bool mouse_down = false;
 
 static Timer timer;
 static double elapsed = 0.0;
@@ -53,14 +70,12 @@ void setup(void)
     // The world.
     dynamicsWorld =
 		new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
-    dynamicsWorld->setGravity(btVector3(0,-10,0));
+    dynamicsWorld->setGravity(btVector3(0,-20,0));
  
 
 	table.add(dynamicsWorld);
-	balls[0]= Ball(0,1,0);
+	balls[0]= Ball(0, 1.125, 0, BROWN, STRIPE); // Ball zero acts as the cue ball
 	ball_count++;
-	//balls[1] = Ball(-0.5,50,0);
-	//ball_count++;
 	for (int i = 0; i < ball_count; i++)
 	{
 		balls[i].add(dynamicsWorld);
@@ -70,7 +85,6 @@ void setup(void)
 
 void cleanup(void)
 {
-    // Clean up behind ourselves like good little programmers
     delete dynamicsWorld;
     delete solver;
     delete dispatcher;
@@ -81,21 +95,34 @@ void cleanup(void)
 void drawScene(void)
 {
 	timer.end_clock();
-	elapsed = (timer.diff().tv_sec + timer.diff().tv_nsec/1000000000.0);
+	elapsed = timer.seconds();
 	timer.start_clock();
 
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	//glTranslatef(0.0, -20.0, -40.0);
 	gluLookAt(40 * cos(camera_angle_x) * sin(camera_angle_y),
 			  40 * cos(camera_angle_y),
 			  40 * sin(camera_angle_x) * sin(camera_angle_y),
 			  0, 0, 0, 0, 1, 0);
 
+
 	glPushMatrix();
-	glTranslatef(0.0, 0.0, 0.0);
 	table.draw();
 	glPopMatrix();
+
+	if (balls[0].getBody()->getLinearVelocity().length() == 0 && mouse_down){
+		glPushMatrix();
+		glLineWidth(3.0);
+		glColor3f(0.0, 0.0, 0.0);
+		int x = balls[0].getTrans().getOrigin().getX();
+		int z = balls[0].getTrans().getOrigin().getZ();
+		glBegin(GL_LINES);
+		glVertex3f( x, 1.125, z);
+		glVertex3f(x + deltaMouseX/10.0, 1.125, z + deltaMouseY/10.0);
+		glEnd();
+		glPopMatrix();
+
+	}
 
 	for (int i = 0; i < ball_count;  i++)
 	{
@@ -132,6 +159,23 @@ void resize(int w, int h)
 	glMatrixMode(GL_MODELVIEW);
 }
 
+void mouseControll(int button, int state, int x, int y){
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
+		mouseX = x; mouseY = y;
+		mouse_down = true;
+	}
+	else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) mouse_down = false;
+}
+
+void mouseActiveControll(int x, int y)
+{
+	if (mouse_down)
+	{
+		deltaMouseX = mouseX - x;
+		deltaMouseY = mouseY - y;
+	}
+}
+
 void keyInput(unsigned char key, int x, int y)
 {
 	switch(key)
@@ -141,7 +185,7 @@ void keyInput(unsigned char key, int x, int y)
 			break;
 		case 'c':
 			if (ball_count < MAX_BALLS){
-				balls[ball_count] = Ball(2,1,0);
+				balls[ball_count] = Ball(2, 1.125, 0, WHITE, SOLID);
 				balls[ball_count].add(dynamicsWorld);
 				ball_count++;
 			}
@@ -190,6 +234,8 @@ int main(int argc, char **argv)
 	glutReshapeFunc(resize);  
 	glutKeyboardFunc(keyInput);
 	glutSpecialFunc(specialKeyInput);
+	glutMouseFunc(mouseControll);
+	glutMotionFunc(mouseActiveControll);
 	glutTimerFunc(5, animate, 1);
 	glutMainLoop(); 
 

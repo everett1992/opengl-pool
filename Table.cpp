@@ -53,6 +53,8 @@ void Table::add(btDiscreteDynamicsWorld *world)
 		bottomRigidBodyCI(0,bottomMotionState,bottomShape,btVector3(0,0,0));
 	bottomRigidBody = new btRigidBody(bottomRigidBodyCI);
 
+	bottomRigidBody->setFriction(100.0);
+	
 	dynamicsWorld->addRigidBody(bottomRigidBody);
 	
 	
@@ -102,7 +104,8 @@ void Table::add(btDiscreteDynamicsWorld *world)
 	btRigidBody::btRigidBodyConstructionInfo
 		wallRigidBodyCI(0,wallMotionState,wallShape,btVector3(0,0,0));
 	wallRigidBody = new btRigidBody(wallRigidBodyCI);
-	//rigidBody->setRestitution(1.0);
+	wallRigidBody->setRestitution(1.0);
+	wallRigidBody->setFriction(0.0);
 	
 	dynamicsWorld->addRigidBody(wallRigidBody);
 }
