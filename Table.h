@@ -1,3 +1,10 @@
+/*
+ * Caleb Everett
+ * Graphics final
+ *
+ * Header for Table.
+ * Class draws a static table with bumpers and holes for pockets.
+ */
 #if !defined(TABLE_H)
 #define TABLE_H
 
@@ -20,6 +27,7 @@ using namespace std;
 class Table
 {
 	private:
+		// bullet stuff
 		btCollisionShape *bottomShape;
 		btMotionState *bottomMotionState;
 		btRigidBody *bottomRigidBody;
@@ -28,6 +36,7 @@ class Table
 		btMotionState *wallMotionState;
 		btRigidBody *wallRigidBody;
 
+		// vertex arrays for different parts of the table
 		static const float bottomVertex[bottomVertex_length][3];
 		static const float shortWallVertex[shortWallVertex_length][3];
 		static const float longWallVertex[longWallVertex_length][3];

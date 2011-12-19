@@ -1,3 +1,9 @@
+/*
+ * Caleb Everett
+ * Graphics Final
+ *
+ * Timer.cpp
+ */
 #if !defined(TIMER_CPP)
 #define TIMER_CPP
 
