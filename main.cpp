@@ -255,8 +255,6 @@ void resize(int w, int h)
 
 // sets initial and final mouse positions, applys force to cue ball when mouse is realeased
 void mouseControll(int button, int state, int x, int y){
-	cout << "clickity" << endl;
-	cout << balls[0].getBody()->getLinearVelocity().length() << endl;
 	if (balls[0].getBody()->getLinearVelocity().length() < 0.01 &&
 		balls[0].getBody()->getLinearVelocity().length() > -0.01){
 		if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
@@ -339,7 +337,7 @@ void printInteraction(void)
 {
 	cout << "click and drag to adjust how hard to hit the cue ball, let go to hit it" << endl;
 	cout << "\'d\' will set the cue ball back to it's starting position" << endl;
-	cout << "\r\' will reset all balls" << endl;
+	cout << "\'r\' will reset all balls" << endl;
 	cout << "\'c\' adds extra balls" << endl;
 }
 
