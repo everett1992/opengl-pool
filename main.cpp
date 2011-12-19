@@ -1,3 +1,10 @@
+/* 
+ * Caleb Everett
+ * graphics final
+ *
+ * sets up the opengl and bullet worlds, handles stepping and drawing.
+ */
+
 #ifdef __APPLE__
 #  include <GLUT/glut.h>
 #else
@@ -7,6 +14,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <iostream>
 #include <math.h>
+
 #include "Cup.h"
 #include "Timer.h"
 #include "Ball.h"
@@ -34,29 +42,35 @@
 
 using namespace std;
  
-static int height, width;
+static int height, width; // window data
 
-static int mouseX, mouseY, deltaMouseX, deltaMouseY;
+// mouse data
+static int mouseX, mouseY, deltaMouseX, deltaMouseY; 
 static bool mouse_down = false;
 
+// timing data
 static Timer timer;
 static double elapsed = 0.0;
 static int animationPeriod = 10;
 
+// bullet stuff
 static btBroadphaseInterface *broadphase;
 static btDefaultCollisionConfiguration *collisionConfiguration;
 static btSequentialImpulseConstraintSolver *solver;
 static btCollisionDispatcher *dispatcher;
 static btDiscreteDynamicsWorld *dynamicsWorld;
 
+// my objects to draw and simulate
 static int ball_count = 0;
 static Ball balls[MAX_BALLS];
 static Table table;
 static Cup cup;
 
+// camera angles
 static float camera_angle_x = 0;
 static float camera_angle_y = 0.6;
 
+// Adds all of the balls to the world
 void rackBalls(void)
 {
 	balls[0]= Ball(20, RADIUS, 0, WHITE, CUE); // Ball zero acts as the cue ball
@@ -103,6 +117,8 @@ void rackBalls(void)
 	}
 }
 
+// called everytime bullet ticks, makes sure no balls are moving up.
+// I was having troubles getting the balls to stay on the table. This helped a bit
 void myTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 	for (int i = 0; i < ball_count; i++)
 	{
@@ -114,13 +130,17 @@ void myTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 	}
 }
 
+// inintialies everything
 void setup(void)
 {
 	glClearColor(0.0, 0.0, 0.0, 0.0); 
 	glEnable(GL_DEPTH_TEST); // Enable depth testing.
+	
+	// soposed to make stuff purdy
 	glEnable(GL_POLYGON_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
 
+	// bunch of bullet stuff
     // Build the broadphase
     broadphase = new btDbvtBroadphase();
  
@@ -138,6 +158,7 @@ void setup(void)
 	dynamicsWorld->setInternalTickCallback(myTickCallback);
  
 
+	// adds all objects to the simulation world
 	cup.add(dynamicsWorld);
 	table.add(dynamicsWorld);
 	rackBalls();
@@ -145,6 +166,8 @@ void setup(void)
 	timer.start_clock();
 }
 
+// cleans some stuff up. There are alot of pointers that should be deleted, but when i try i get segfaults, cant figure it out
+// TODO use debugger
 void cleanup(void)
 {
     delete dynamicsWorld;
@@ -154,10 +177,12 @@ void cleanup(void)
     delete broadphase;
 }
 
+// calls drawing routines for all objects
+// updates the framerate
 void drawScene(void)
 {
 	timer.end_clock();
-	elapsed = timer.seconds();
+	elapsed = timer.seconds(); // gets the time in fractions of a second (nano or milli accuracy depending on system)
 	timer.start_clock();
 
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -170,6 +195,7 @@ void drawScene(void)
 	table.draw();
 	cup.draw();
 
+	// draws the line for user interaction
 	if (balls[0].getBody()->getLinearVelocity().length() < 0.01 &&
 		balls[0].getBody()->getLinearVelocity().length() > -0.01 && 
 		mouse_down){
@@ -195,10 +221,12 @@ void drawScene(void)
 }
 
 
+// upadtes all objects and calls the redraw function
 void animate(int value)
 {
 	dynamicsWorld->stepSimulation(elapsed,7);
 
+	// updates all ball locations
 	for (int i = 0; i < ball_count; i++)
 	{
 		balls[i].update();
@@ -208,12 +236,12 @@ void animate(int value)
 	glutPostRedisplay();
 }
 
+// resizes the world when the window is adjusted 
 void resize(int w, int h)
 {
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h); 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//glFrustum(-5.0, 5.0, -5.0, 5.0, 5.0, 100.0);
 	gluPerspective(90, w / (h * 1.0), 5, 100);
 
 	// set the width and height
@@ -222,6 +250,7 @@ void resize(int w, int h)
 	glMatrixMode(GL_MODELVIEW);
 }
 
+// sets initial and final mouse positions, applys force to cue ball when mouse is realeased
 void mouseControll(int button, int state, int x, int y){
 	cout << "clickity" << endl;
 	cout << balls[0].getBody()->getLinearVelocity().length() << endl;
@@ -240,6 +269,7 @@ void mouseControll(int button, int state, int x, int y){
 
 }
 
+// updates mouse position in the world for drawing force line
 void mouseActiveControll(int x, int y)
 {
 	if (mouse_down)
@@ -249,6 +279,7 @@ void mouseActiveControll(int x, int y)
 	}
 }
 
+// input for reseting the cue ball and adding balls
 void keyInput(unsigned char key, int x, int y)
 {
 	switch(key)
@@ -271,6 +302,7 @@ void keyInput(unsigned char key, int x, int y)
 	}
 }
 
+// arrow keys adjust the screen
 void specialKeyInput(int key, int x, int y)
 {
 	switch(key)
@@ -295,8 +327,16 @@ void specialKeyInput(int key, int x, int y)
 
 }
 
+void printInteraction(void)
+{
+	cout << "click and drag to adjust how hard to hit the cue ball, let go to hit it" << endl;
+	cout << "\'d\' will set the cue ball back to it's starting position" << endl;
+	cout << "\'c\' adds extra balls" << endl;
+}
+
 int main(int argc, char **argv) 
 {
+	printInteraction();
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(500,500);
