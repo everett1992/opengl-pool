@@ -70,6 +70,9 @@ static Cup cup;
 static float camera_angle_x = 0;
 static float camera_angle_y = 0.6;
 
+static int stripes = 7;
+static int solids = 7;
+
 // Adds all of the balls to the world
 void rackBalls(void)
 {
@@ -294,6 +297,11 @@ void keyInput(unsigned char key, int x, int y)
 				ball_count++;
 			}
 			break;
+		case 'r':
+			for (int i = 0; i < ball_count; i++){
+				balls[i].reset();
+			}
+			break;
 		case 'd':
 			balls[0].reset();
 			break;
@@ -331,6 +339,7 @@ void printInteraction(void)
 {
 	cout << "click and drag to adjust how hard to hit the cue ball, let go to hit it" << endl;
 	cout << "\'d\' will set the cue ball back to it's starting position" << endl;
+	cout << "\r\' will reset all balls" << endl;
 	cout << "\'c\' adds extra balls" << endl;
 }
 
