@@ -3,11 +3,13 @@
 
 #include "Ball.h"
 
-#define MASS 2
+#define MASS .6
 #define RADIUS 1.125
 
 #define SOLID  0
 #define STRIPE 1
+#define CUE    2
+#define EIGHT  3
 
 #define WHITE  0
 #define YELLOW 1
@@ -24,27 +26,30 @@ Ball::Ball()
 	Ball(0,RADIUS,0, WHITE, SOLID);
 }
 
-Ball::Ball(float x, float y, float z, int colorTmp, int typeTmp)
+Ball::Ball(float xTmp, float yTmp, float zTmp, int colorTmp, int typeTmp)
 {
+	x = xTmp;
+	y = yTmp;
+	z = zTmp;
+
 	color = colorTmp;
 	type = typeTmp;
 
+}
+void Ball::add(btDiscreteDynamicsWorld *world)
+{
 	shape = new btSphereShape(RADIUS);
 	motionState =
-		new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1), btVector3(x,y,z)));
+		new btDefaultMotionState(btTransform(btQuaternion(rand(),rand(),rand(),1), btVector3(x,y,z)));
 	btScalar mass = MASS;
 	btVector3 inertia(0,0,0);
 	shape->calculateLocalInertia(mass,inertia);
 
 	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass,motionState,shape,inertia);
 	rigidBody = new btRigidBody(rigidBodyCI);
-	rigidBody->setRestitution(1.0);
-	rigidBody->setDamping(0,0.6);
-}
-void Ball::add(btDiscreteDynamicsWorld *world)
-{
-	dynamicsWorld = world;
-	dynamicsWorld->addRigidBody(rigidBody);
+	rigidBody->setRestitution(0.5);
+	rigidBody->setDamping(0,0.8);
+	world->addRigidBody(rigidBody);
 }
 
 
@@ -93,10 +98,10 @@ void Ball::draw(){
 
 	for(j = 0; j < q; j++)
 	{
-		if ((j < q * .3) || type == SOLID) glColor3f(Color[0], Color[1], Color[2]);
+		if ((j < q * .25) || type == SOLID) glColor3f(Color[0], Color[1], Color[2]);
 		else glColor3f(1.0, 1.0, 1.0); // white for outer area
 		
-		if (type == SOLID && (j > q * .5)) glColor3f(1.0, 1.0, 1.0);
+		if (type == SOLID && (j > q * .55)) glColor3f(1.0, 1.0, 1.0);
 		glBegin(GL_TRIANGLE_STRIP);
 		for(i = 0; i <= p; i++)
 		{
@@ -129,6 +134,16 @@ void Ball::update()
 	btTransform trans;
 	rigidBody->getMotionState()->getWorldTransform(trans);
 	trans.getOpenGLMatrix(ballMatrix); // set ballMatrix to the matrix from opengl
+}
+
+void Ball::reset()
+{
+	rigidBody->setLinearVelocity(btVector3(0, 0, 0));
+	rigidBody->setAngularVelocity(btVector3(0, 0, 0));
+	delete rigidBody->getMotionState();
+	motionState =
+		new btDefaultMotionState(btTransform(btQuaternion(0,0,0,1), btVector3(x, y, z)));
+	rigidBody->setMotionState(motionState);
 }
 
 btRigidBody* Ball::getBody()

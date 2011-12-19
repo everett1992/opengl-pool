@@ -7,9 +7,9 @@ else
 endif
 
 
-all: Timer.o Ball.o main.o Table.o 
+all: Timer.o Ball.o Table.o Cup.o main.o 
 	@echo 'linking executable'
-	@g++ Timer.o Ball.o Table.o main.o ./bullet-2.79/src/*.o $(INCLUDES) -o pool.exe
+	@g++ Timer.o Ball.o Table.o Cup.o main.o ./bullet-2.79/src/*.o $(INCLUDES) -o pool.exe
 main.o: main.cpp
 	@echo 'building main.o'
 	@g++ -c main.cpp $(INCLUDES)
@@ -22,6 +22,9 @@ Ball.o: Ball.h Ball.cpp
 Table.o: Table.h Table.cpp
 	@echo 'building Table.o'
 	@g++ -c Table.cpp $(INCLUDES)
+Cup.o: Cup.h Cup.cpp
+	@echo 'building Cup.o'
+	@g++ -c Cup.cpp $(INCLUDES)
 clean:
 	@echo 'cleaning up files'
 	rm -f *.o

@@ -1,5 +1,5 @@
-#if !defined(TABLE_H)
-#define TABLE_H
+#if !defined(CUP_H)
+#define CUP_H
 
 #ifdef __APPLE__
 #  include <GLUT/glut.h>
@@ -11,13 +11,14 @@
 #include <iostream>
 #include <math.h>
 
-#define bottomVertex_length 8
-#define shortWallVertex_length 6
-#define longWallVertex_length 6
+#define sideBottom_length 8
+#define sideWall_length 8
+#define cornerBottom_length 8
+#define cornerWall_length 8
 
 using namespace std;
 
-class Table
+class Cup
 {
 	private:
 		btCollisionShape *bottomShape;
@@ -28,16 +29,16 @@ class Table
 		btMotionState *wallMotionState;
 		btRigidBody *wallRigidBody;
 
-		static const float bottomVertex[bottomVertex_length][3];
-		static const float shortWallVertex[shortWallVertex_length][3];
-		static const float longWallVertex[longWallVertex_length][3];
+		static const float sideBottomVertex[sideBottom_length][3];
+		static const float sideWallVertex[sideWall_length][3];
+		static const float cornerBottomVertex[cornerBottom_length][3];
+		static const float cornerWallVertex[cornerWall_length][3];
+
 
 	public:
-		Table();
+		Cup();
 		void add(btDiscreteDynamicsWorld *dynamicsWorld);
 		void draw();
-
-		~Table();
 };
 
 #endif

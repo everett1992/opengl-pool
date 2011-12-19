@@ -20,10 +20,10 @@ class Ball
 		btCollisionShape *shape;
 		btMotionState *motionState;
 		btRigidBody *rigidBody;
-		btDiscreteDynamicsWorld *dynamicsWorld;
 		btScalar ballMatrix[16];
 		int color;
 		int type;
+		float x, y, z; // the original position of the ball
 	
 	public:
 		Ball();
@@ -31,6 +31,7 @@ class Ball
 		void add(btDiscreteDynamicsWorld *dynamicsWorld);
 		void draw();
 		void update();
+		void reset();
 		btRigidBody* getBody();
 		btTransform  getTrans();
 
