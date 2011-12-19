@@ -1,3 +1,8 @@
+/*
+ * Caleb Everett
+ * graphics final
+ *
+ */
 #if !defined(TABLE_CPP) 
 #define TABLE_CPP
 

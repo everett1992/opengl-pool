@@ -1,3 +1,10 @@
+/*
+ * Caleb Everett
+ * graphics final
+ *
+ * Ball.cpp
+ */
+
 #if !defined(BALL_CPP) 
 #define BALL_CPP
 

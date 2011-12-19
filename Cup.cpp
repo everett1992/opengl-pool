@@ -1,8 +1,16 @@
+/*
+ * Caleb Everett
+ * Graphics Final
+ *
+ * Cup.cpp
+ */
+
 #if !defined(CUP_CPP)
 #define CUP_CPP
 
 #include "Cup.h"
 
+// not used
 const float Cup::sideBottomVertex[sideBottom_length][3] = {
 	{  15, 0, 1.5},
 	{  15, 2, 1.5},
@@ -25,6 +33,7 @@ const float Cup::sideWallVertex[sideWall_length][3] = {
 	{ -1.5, 2,  15}
 	};
 
+// not used
 const float Cup::cornerBottomVertex[cornerBottom_length][3] = {
 	{  15, 0, 1.5},
 	{  15, 2, 1.5},
