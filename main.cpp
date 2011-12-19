@@ -258,7 +258,7 @@ void keyInput(unsigned char key, int x, int y)
 			break;
 		case 'c':
 			if (ball_count < MAX_BALLS){
-				balls[ball_count] = Ball(2, 1.125, 0, WHITE, SOLID);
+				balls[ball_count] = Ball(2, 1.125, 0, BLACK, STRIPE);
 				balls[ball_count].add(dynamicsWorld);
 				ball_count++;
 			}
