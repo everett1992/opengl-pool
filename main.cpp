@@ -118,6 +118,8 @@ void setup(void)
 {
 	glClearColor(0.0, 0.0, 0.0, 0.0); 
 	glEnable(GL_DEPTH_TEST); // Enable depth testing.
+	glEnable(GL_POLYGON_SMOOTH);
+	glEnable(GL_LINE_SMOOTH);
 
     // Build the broadphase
     broadphase = new btDbvtBroadphase();
@@ -165,11 +167,8 @@ void drawScene(void)
 			  40 * sin(camera_angle_x) * sin(camera_angle_y),
 			  0, 0, 0, 0, 1, 0);
 
-
-	glPushMatrix();
 	table.draw();
 	cup.draw();
-	glPopMatrix();
 
 	if (balls[0].getBody()->getLinearVelocity().length() < 0.01 &&
 		balls[0].getBody()->getLinearVelocity().length() > -0.01 && 
@@ -214,7 +213,8 @@ void resize(int w, int h)
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h); 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glFrustum(-5.0, 5.0, -5.0, 5.0, 5.0, 100.0);
+	//glFrustum(-5.0, 5.0, -5.0, 5.0, 5.0, 100.0);
+	gluPerspective(90, w / (h * 1.0), 5, 100);
 
 	// set the width and height
 	width = w; height = h;

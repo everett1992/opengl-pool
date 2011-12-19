@@ -47,7 +47,7 @@ void Ball::add(btDiscreteDynamicsWorld *world)
 
 	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass,motionState,shape,inertia);
 	rigidBody = new btRigidBody(rigidBodyCI);
-	rigidBody->setRestitution(0.5);
+	rigidBody->setRestitution(0.8);
 	rigidBody->setDamping(0,0.8);
 	world->addRigidBody(rigidBody);
 }
