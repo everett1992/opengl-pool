@@ -224,7 +224,7 @@ void drawScene(void)
 // upadtes all objects and calls the redraw function
 void animate(int value)
 {
-	dynamicsWorld->stepSimulation(elapsed,7);
+	dynamicsWorld->stepSimulation(elapsed,0);
 
 	// updates all ball locations
 	for (int i = 0; i < ball_count; i++)
